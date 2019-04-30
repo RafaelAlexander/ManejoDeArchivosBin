@@ -10,23 +10,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-/*typedef struct{
+//enum Consistencia{SH,S,JH};
+struct MetaData{
 	char* consistencia;
 	int particiones;
 	int tiempoDeCompactacion;
-}MetaData;*/
+};
+void crearBitMapFS(char path[]);
+void crearTables(char path[]);
+void crearBloquesDatos(char path[]);
+void crearUnaTabla(char[],char nombreDeLaTabla[]);
+void crearMetaDataTabla(char[]);
+void completarDatosDeMetaData(char[]);
+void lecturaDatosDeMetaData(char[]);
 
 int main(void) {
 	char path[100];
 		//char *path_aux = config_get_string_value(config,"PUNTOMONTAJE");
-		strcpy(path,"/home/utnso/Laureano/LISSANDRA_FS/");
+		strcpy(path,"/home/utnso/Laureano/");
+		strcat(path,"LISSANDRA_FS/");
 		char nombreArchivo[100];
 
 		if(mkdir(path, 0777) != 0){
 			printf("No se pudo crear Carpeta\n");
 		}
-		/*MetaData data;
+		//printf("%s",a);
+		/*struct MetaData data;//Intento de struct
 		data.consistencia="SH";
 		data.particiones=4;
 		data.tiempoDeCompactacion=600000;*/
@@ -93,46 +104,61 @@ void crearMetaDataTabla(char path[]){
 }
 void completarDatosDeMetaData(char path[]){
 
-	/*
+
 	//Intento de struct(recibi Medata data)
-	FILE* f;
-	f=fopen(path,"ab");
-	fwrite(&data,sizeof(MetaData),1,f);
+	/*FILE* f;
+	f=fopen(path,"w");
+	if(f)
+	fwrite(&data,sizeof(struct MetaData),1,f);
 	fclose(f);*/
 	//Modo Prueba(la funcion solo recibe path).Este es una opcion.
 	char* buffer;
 	int nbytes;
 	buffer="CONSISTENCY=SC\nPARTITIONS=4\nCOMPACTION_TIME=60000";
 	nbytes=strlen(buffer);
-
-	FILE *f = fopen(path, "wb+");
+	FILE *f = fopen(path, "w+");
+	if(f){
 	//Mando tamaño de string
 	fwrite(&nbytes,sizeof nbytes,1,f);
 	//Mando String
 	fwrite(buffer,nbytes,1,f);
+	}
 	fclose(f);
 }
 void lecturaDatosDeMetaData(char path[]){
 
 		char dirMetaData[100];
+		char** guardado;
 		strcpy(dirMetaData,path);
 		strcat(dirMetaData,"Metadata.bin");
-		char** guardadoDeToken;
-		/*
 		//Intento de meter struct
-		FILE* f;
+		/*FILE* f;
 		f=open(path,"rb");
-		MetaData data;
-		fread(&data,sizeof(MetaData),1,f);
+		struct MetaData data;
+		fread(&data,sizeof(struct MetaData),1,f);
 		printf("CONSISTENCY=%d\nPARTITIONS=%e\nCOMPACTION_TIME=%f",data.consistencia,data.particiones,data.tiempoDeCompactacion);
 		fclose(f);*/
 
 		int nbytes;
 	    char *contenido;
+	    char *delimitador="=\n";
 	    FILE* f=fopen(dirMetaData,"rb");
+
+	    if(f){
+
 	    fread (&nbytes, sizeof nbytes, 1, f);
 	    contenido = (char *)malloc(nbytes+1);
 	    fread (contenido, nbytes, 1, f);
 	    contenido[nbytes] = 0;
-	    printf("\n%s\n",contenido);
+	    //printf("\n%s\n",contenido);
+	    char* token=strtok_r(contenido,delimitador,guardado);
+	    if(token!=NULL){
+	    	while(token!=NULL){
+	    	if(strstr(token,"CONSISTENCY")==NULL&&strstr(token,"PARTITIONS")==NULL&&strstr(token,"COMPACTION_TIME")==NULL)
+	    			printf("\n%s\n",token);
+	    		token=strtok_r(NULL,delimitador,guardado);
+	    	}
+	    }
+	    }
+	    fclose(f);
 }
