@@ -23,19 +23,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: ManejoArchivo
+all: ManejoDeArchivosBin
 
 # Tool invocations
-ManejoArchivo: $(OBJS) $(USER_OBJS)
+ManejoDeArchivosBin: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "ManejoArchivo" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc  -o "ManejoDeArchivosBin" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) ManejoArchivo
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) ManejoDeArchivosBin
 	-@echo ' '
 
 .PHONY: all clean dependents

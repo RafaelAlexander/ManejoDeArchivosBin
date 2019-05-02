@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/ManejoArchivo.c 
+../src/ManejoDeArchivosBin.c 
 
 OBJS += \
-./src/ManejoArchivo.o 
+./src/ManejoDeArchivosBin.o 
 
 C_DEPS += \
-./src/ManejoArchivo.d 
+./src/ManejoDeArchivosBin.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
